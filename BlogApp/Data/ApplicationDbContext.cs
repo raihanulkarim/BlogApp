@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BlogApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Data
 {
@@ -8,5 +9,8 @@ namespace BlogApp.Data
         {
 
         }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<PostCat> PostCats { get; set; }
     }
 }
