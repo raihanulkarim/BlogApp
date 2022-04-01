@@ -13,31 +13,26 @@ using Microsoft.AspNetCore.Authorization;
 namespace BlogApp.Controllers
 {
     [Authorize]
-    public class BlogsController : Controller
+    public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public BlogsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public CategoriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             this.userManager = userManager;
         }
 
-        // GET: Blog
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Posts.Where(r => r.AuthorId == userManager.GetUserId(HttpContext.User)).Include(r => r.Author).Include(p => p.PostCats).ThenInclude(r=>r.Category);
-            if (applicationDbContext.Count() == 0)
-            {
-                ViewBag.flag = false;
-            }
-            ViewBag.cat = _context.Categories.Where(r => r.UserId == userManager.GetUserId(HttpContext.User));
+
+            var applicationDbContext = _context.Categories.Where(r=> r.UserId == userManager.GetUserId(HttpContext.User)).Include(c => c.User);
             return View(await applicationDbContext.OrderByDescending(r=> r.Id).ToListAsync());
         }
 
-        // GET: Blog/Details/5
-        [AllowAnonymous]
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,39 +40,42 @@ namespace BlogApp.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Author)
+            var category = await _context.Categories
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
+            if (category == null)
             {
                 return NotFound();
             }
-
-            return View(post);
+            if (UserExists(category) == false)
+            {
+                return NotFound();
+            }
+            return View(category);
         }
 
-        // GET: Blog/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,SubTitle,Description,PostedDate,AuthorId")] Post post)
+        public async Task<IActionResult> Create( Category category)
         {
             if (ModelState.IsValid)
             {
-                post.AuthorId = userManager.GetUserId(HttpContext.User);
-                _context.Add(post);
+                category.UserId = userManager.GetUserId(HttpContext.User);
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(post);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", category.UserId);
+            return View(category);
         }
 
-        // GET: Blog/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,24 +83,23 @@ namespace BlogApp.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Author)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            if (UserExists(post) == false)
+            if (UserExists(category) == false)
             {
                 return NotFound();
             }
-            return View(post);
+            return View(category);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId")] Category category)
         {
-            if (id != post.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -111,12 +108,12 @@ namespace BlogApp.Controllers
             {
                 try
                 {
-                    _context.Update(post);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -127,10 +124,10 @@ namespace BlogApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(post);
+            return View(category);
         }
 
-        // GET: Blog/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,39 +135,38 @@ namespace BlogApp.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Author)
+            var category = await _context.Categories
+                .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
+            if (category == null)
             {
                 return NotFound();
             }
-
-            if (UserExists(post) == false)
+            if (UserExists(category) == false)
             {
                 return NotFound();
             }
-            return View(post);
+            return View(category);
         }
 
-        // POST: Blog/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
-            _context.Posts.Remove(post);
+            var category = await _context.Categories.FindAsync(id);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PostExists(int id)
+        private bool CategoryExists(int id)
         {
-            return _context.Posts.Any(e => e.Id == id);
+            return _context.Categories.Any(e => e.Id == id);
         }
-        public bool UserExists(Post post)
+        public bool UserExists(Category cat)
         {
-            if (userManager.GetUserId(HttpContext.User) != post.AuthorId )
+            if (userManager.GetUserId(HttpContext.User) != cat.UserId)
             {
                 return false;
             }

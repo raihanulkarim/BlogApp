@@ -10,7 +10,7 @@ namespace BlogApp.Models
         public string Title { get; set; }
         public string SubTitle { get; set; }
         public string Description { get; set; }
-        public DateTime PostedDate { get; set; }
+        public DateTime PostedDate { get; set; } = DateTime.Now;
         public string AuthorId { get; set; }
         public ICollection<PostCat> PostCats { get; set; }
         public ApplicationUser Author { get; set; }

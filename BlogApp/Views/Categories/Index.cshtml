@@ -1,0 +1,55 @@
+﻿@model IEnumerable<BlogApp.Models.Category>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<header class="masthead" style="background-image: url('/assets/img/banner.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="page-heading">
+                    <h1>Category</h1>
+                    <span class="subheading">List of Category.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p>
+                 <div class="d-flex mb-4"><a class="btn btn-primary text-uppercase" asp-action="Create">Add New Category</a></div>
+            </p>
+        </div>
+      <div class="col-md-6 mx-auto">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
