@@ -9,6 +9,7 @@ using BlogApp.Data;
 using BlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using BlogApp.ViewModels;
 
 namespace BlogApp.Controllers
 {
@@ -59,22 +60,49 @@ namespace BlogApp.Controllers
         // GET: Blog/Create
         public IActionResult Create()
         {
-            return View();
+            var cat = _context.Categories.ToList();
+            PostCreateViewModel viewModel = new PostCreateViewModel();
+            viewModel.Categories = cat.Select(r => new SelectListItem()
+            {
+                Text = r.Name,
+                Value = r.Id.ToString()
+            }).ToList();
+            return View(viewModel);
         }
 
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,SubTitle,Description,PostedDate,AuthorId")] Post post)
+        public async Task<IActionResult> Create(PostCreateViewModel viewModel)
         {
+            var selectedValue = viewModel.Categories.Where(r => r.Selected).Select(r => r.Value).Select(int.Parse).ToList();
             if (ModelState.IsValid)
             {
-                post.AuthorId = userManager.GetUserId(HttpContext.User);
+                var post = new Post
+                {
+                    Title = viewModel.Title,
+                    Description = viewModel.Description,
+                    SubTitle = viewModel.SubTitle,
+                    PostedDate = viewModel.PublishDate,
+                    AuthorId = userManager.GetUserId(HttpContext.User)
+                };
                 _context.Add(post);
+                await _context.SaveChangesAsync();
+
+                foreach (var cat in selectedValue)
+                {
+                    _context.PostCats.Add(
+                        new PostCat
+                        {
+                            PostId = post.Id,
+                            CatId = cat
+                        }
+                        );
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(post);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Blog/Edit/5
