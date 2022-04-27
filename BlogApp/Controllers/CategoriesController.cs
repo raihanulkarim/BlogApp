@@ -97,7 +97,7 @@ namespace BlogApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId")] Category category)
+        public async Task<IActionResult> Edit(int id,  Category category)
         {
             if (id != category.Id)
             {
@@ -108,6 +108,7 @@ namespace BlogApp.Controllers
             {
                 try
                 {
+                    category.UserId = userManager.GetUserId(HttpContext.User);
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }

@@ -22,14 +22,19 @@ namespace BlogApp.Controllers
             this.context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var res = await context.Posts.OrderByDescending(p => p.Id).Include(r => r.Author).ToListAsync();
+            var res = from s in context.Posts
+                           .Include(r=> r.Author)
+                           select s;
+            //var res = await context.Posts.OrderByDescending(p => p.Id).Include(r => r.Author).ToListAsync();
             if (res.Count() == 0)
             {
                 ViewBag.flag = false;
             }
-            return View(res);
+            int pageSize = 10;
+            var posts = await PaginatedList<Post>.CreateAsync(res.AsNoTracking(), pageNumber ?? 1, pageSize);
+            return View(posts);
         }
 
         public IActionResult Contact()

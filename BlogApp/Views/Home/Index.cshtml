@@ -1,21 +1,40 @@
-﻿@model IEnumerable<BlogApp.Models.Post>
+﻿@model PaginatedList<BlogApp.Models.Post>
 @{
     ViewData["Title"] = "Home Page";
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('/assets/img/home-bg.jpg')">
+@if (!Model.HasPreviousPage)
+{
+    <header class="masthead" style="background-image: url('/assets/img/banner-6617550_1280.png')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1>Welcome to BlogApp</h1>
+                        <span class="subheading">Share your thoughts here!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+}
+else
+{
+     <header class="masthead" style="background-image: url('/assets/img/banner-6617550_1280.png')">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="site-heading">
-                    <h1>Welcome to BlogApp</h1>
-                    <span class="subheading">Share your thoughts here!</span>
+                    <h1>Blogs</h1>
                 </div>
             </div>
         </div>
     </div>
-</header>
+    </header> 
+}
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-10 col-xl-9">
@@ -37,7 +56,7 @@
                     </a>
                     <p class="post-meta">
                         Posted by
-                        <a href="#!">@post.Author.Email</a>
+                        @post.Author.Email
                         on @post.PostedDate
                     </p>
                 </div>
@@ -46,8 +65,31 @@
                 }
             
             <!-- Pager-->
-            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+            <div class = row>
+            <div class=" col-6 mb-4">
+              
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class="align-content-lg-start btn btn-primary text-uppercase @prevDisabled">
+            Newer Posts
+        </a>
+        </div>
+         <div class=" d-flex col-6 justify-content-end mb-4">
+                <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           class=" btn btn-primary text-uppercase @nextDisabled">
+            Older Posts
+        </a>
+            </div>
+            </div>
             }
         </div>
+       
+
+        
     </div>
 </div>

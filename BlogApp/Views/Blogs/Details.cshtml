@@ -28,7 +28,11 @@
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
-                    @Html.DisplayFor(model => model.Description)
+                @foreach(var i in Model.PostCats)
+                {
+                    <p>@i.Category.Name</p>
+                }
+                @Html.DisplayFor(model => model.Description)
             </div>
         </div>
     </div>

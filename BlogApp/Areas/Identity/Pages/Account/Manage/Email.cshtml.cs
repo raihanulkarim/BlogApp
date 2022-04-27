@@ -55,6 +55,8 @@ namespace BlogApp.Areas.Identity.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             Email = email;
 
+            var userName = await _userManager.GetUserNameAsync(user);
+            Username = userName;
             Input = new InputModel
             {
                 NewEmail = email,

@@ -25,6 +25,7 @@ namespace BlogApp.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
             _logger = logger;
         }
+        public string Username { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -54,6 +55,8 @@ namespace BlogApp.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
+            var userName = await _userManager.GetUserNameAsync(user);
+            Username = userName;
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

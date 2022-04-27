@@ -32,7 +32,6 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto py-4 py-lg-0">
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="home" asp-action="index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4"  asp-controller="home" asp-action="about">About</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4"  asp-controller="home" asp-action="contact">Contact</a></li>
                         @if (SignInManager.IsSignedIn(User))
                         {
@@ -43,7 +42,7 @@
                         </li>
                         <li class="nav-item">
                         <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button id="logout" type="submit" class="nav-link text-light btn btn-link px-lg-3 py-3 py-lg-4">Logout</button>
+                        <button id="logout" type="submit" class="nav-link nav-logout text-light btn ">LOGOUT</button>
                         </form>
                         </li>
                         }

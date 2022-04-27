@@ -1,9 +1,10 @@
-﻿@model IEnumerable<BlogApp.Models.Post>
+﻿@model PaginatedList<BlogApp.Models.Post>
 
 @{
     ViewData["Title"] = "Index";
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-
     <!-- Page Header-->
 <header class="masthead" style="background-image: url('/assets/img/banner.jpg')">
     <div class="container position-relative px-4 px-lg-5">
@@ -70,8 +71,17 @@
                 <hr class="my-4" />
                 }
             
-            <!-- Pager-->
-            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+              <!-- Pager-->
+        <div class = row>
+            <div class=" col-6 mb-4">
+                
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="align-content-lg-start btn btn-primary text-uppercase @prevDisabled">Newer Posts </a>
+            </div>
+         <div class=" d-flex col-6 justify-content-end mb-4">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]"asp-route-pageNumber="@(Model.PageIndex + 1)"asp-route-currentFilter="@ViewData["CurrentFilter"]" class=" btn btn-primary text-uppercase @nextDisabled"> Older Posts </a>
+            </div>
+            </div>
             }
         </div>
     </div>
