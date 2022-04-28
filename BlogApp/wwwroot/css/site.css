@@ -69,3 +69,110 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+.user-profile {
+    background-color: darkslategrey;
+    opacity: 0.8;
+}
+.user-data {
+    float: left;
+    width: 46%;
+    padding-left: 27px;
+    margin-bottom: 20px;
+}
+
+.user-data h2 {
+    margin-bottom: 5px;
+    margin-top: 20px;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.user-data .post-label {
+    font-size: 12px;
+    border: 1px solid #C3CECB;
+    padding: 0px 4px;
+    border-radius: 4px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+
+}
+
+.user-data span {
+    font-size: 14px;
+    color: white;
+    margin-bottom: 5px;
+
+}
+
+.edit-button {
+    font-size: 13px;
+    border: 1px solid #C3CECB;
+    padding: 0px 1px;
+    border-radius: 5px;
+    text-align:center;
+    background-color:steelblue;
+}
+.edit-button > a{
+    text-decoration:none;
+}
+.edit-button > a:hover{
+    background-color:cadetblue;
+    border-radius: 5px;
+    text-decoration:none;
+}
+
+.fa-facebook {
+    background: #3B5998;
+    font-size:30px;
+    border-radius:30px;
+    color: white;
+}
+
+.fa-twitter {
+    background: #55ACEE;
+    font-size: 30px;
+    border-radius: 30px;
+    color: white;
+}
+
+.fa-instagram {
+    background: #125688;
+    font-size: 30px;
+    border-radius: 30px;
+    color: white;
+}
+.sm-list {
+    display: flex;
+}
+
+.sm-link {
+    color: #929FC5;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid #929FC5;
+    border-radius: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+
+    .sm-link:last-child {
+        margin-right: 0;
+    }
+
+    .sm-link:hover {
+        background-image: linear-gradient(to right, #A971FF, #00F0FF);
+        color: #FFF;
+    }
+.about-section{
+    background-color:antiquewhite;
+    border:1px solid white;
+    padding:20px;
+    border-radius:10px;
+    opacity:0.8;
+}
+.about-section > h5 {
+    margin: 10px 0px;
+    text-align:center;
+}

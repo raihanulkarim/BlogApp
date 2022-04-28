@@ -13,12 +13,13 @@
         <title>@ViewData["Title"] - BlogApp</title>
         <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" crossorigin="anonymous"></script>
         <!-- Google fonts-->
         <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="~/css/styles.css" rel="stylesheet" />
+        <link href="~/css/site.css" rel="stylesheet" />
 </head>
 <body>
 <!-- Navigation-->
@@ -38,7 +39,7 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4"  asp-controller="blogs" asp-action="index">My Blog</a></li>
 
                         <li class="nav-item">
-                        <a id="manage" class="nav-link px-lg-3 py-3 py-lg-4" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profile</a>
+                        <a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="home" asp-action="profile">Profile</a>
                         </li>
                         <li class="nav-item">
                         <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
@@ -94,7 +95,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2021</div>
+                        <div class="small text-center text-muted fst-italic">Copyright &copy; BlogApp @DateTime.Now.Year</div>
                     </div>
                 </div>
             </div>

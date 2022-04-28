@@ -1,0 +1,119 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model PaginatedList<BlogApp.Models.Post>
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Profile";
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+    <!-- Page Header-->
+<header class="masthead" style="background-image: url('/assets/img/mountains-55067.png')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-4 col-lg-4 col-xl-5">
+                <div class="page-heading">
+                    <img class="img-fluid rounded border" src="~/assets/img/@ViewBag.userId.ProPic" alt="" />
+                </div>
+                 <p class="edit-button"><a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Edit Profile</a></p>
+            </div>
+            <div class="user-profile col-md-8 col-lg-8 col-xl-7">
+                <div class="user-data text-light">
+                    <h2>@ViewBag.userId.FirstName @ViewBag.userId.LastName</h2>
+                    <div class="small">
+            <span class="post-label">@ViewBag.userId.Occupation</span><br>
+            <span class="small"><strong>@ViewBag.userId.Organisation</strong></span><br>
+            <i class="fa fa-envelope small"></i><span> @ViewBag.userId.Email</span><br />
+            <i class="fa fa-phone small" aria-hidden="true"> </i><span> @ViewBag.userId.PhoneNumber</span><br />
+                                <span class="small">Joined @ViewBag.NumberOfDays days ago!</span><br />
+                    </div>
+                <div class="sm-list">
+              <a href="@ViewBag.userId.Facebook" class="sm-link">
+               <i class="fab fa-facebook"></i>
+              </a>
+              <a href="@ViewBag.userId.Instagram" class="sm-link">
+               <i class="fab fa-instagram"></i>
+              </a>
+              <a href="@ViewBag.userId.Twitter" class="sm-link">
+               <i class="fab fa-twitter"></i>
+              </a>
+              <a href="https://www.youtube.com/" class="sm-link">
+               <i class="fab fa-youtube"></i>
+              </a>
+            </div> 
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 mx-auto mt-4">
+                 <div class="about-section">
+                     <h5>"About @ViewBag.userId.FirstName @ViewBag.userId.LastName"</h5>
+                     <p>
+                         @ViewBag.userId.Description
+                     </p>
+                 </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+     <div class="row">
+         <div class="col-4 text-center mb-3 mx-auto">
+         <h1>Recent Blogs</h1>
+         <hr />
+     </div>
+     <hr />
+     </div>
+    <div class="row">
+            <div class="col-md-9 col-lg-9 col-xl-9 mx-auto">
+             <!-- Post preview-->
+            @if(ViewBag.flag == false)
+            {
+                <div class="text-center">
+                    <p>Nothing Found!</p>
+                </div>
+            }
+            else
+            {
+                @foreach(var post in Model)
+                {
+                <div class="post-preview">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <a asp-action="details" asp-controller="blogs" asp-route-id="@post.Id">
+                                <h2 class="post-title">@post.Title</h2>
+                                <h3 class="post-subtitle">@post.SubTitle</h3>
+                            </a>
+                            <p class="post-meta">
+                                Posted by
+                                <a href="#!">@post.Author.Email</a>
+                                on @post.PostedDate
+                            </p>
+                        </div>
+                        <div class="col-md-2">
+                            <a asp-action="edit" asp-controller="blogs" asp-route-id="@post.Id" class="text-warning">Edit</a> |
+                            <a asp-action="delete" asp-controller="blogs" asp-route-id="@post.Id" class="text-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Divider-->
+                <hr class="my-4" />
+                }
+            
+              <!-- Pager-->
+        <div class = row>
+            <div class=" col-6 mb-4">       
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="align-content-lg-start btn btn-primary text-uppercase @prevDisabled">Newer Posts </a>
+            </div>
+            <div class=" d-flex col-6 justify-content-end mb-4">
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]"asp-route-pageNumber="@(Model.PageIndex + 1)"asp-route-currentFilter="@ViewData["CurrentFilter"]" class=" btn btn-primary text-uppercase @nextDisabled"> Older Posts </a>
+            </div>
+         </div>
+            }
+        </div>
+    </div>
+</div>
