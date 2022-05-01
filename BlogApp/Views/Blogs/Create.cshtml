@@ -5,7 +5,7 @@
 }
 
   <!-- Page Header-->
-<header class="masthead" style="background-image: url('/assets/img/banner.jpg')">
+<header class="masthead" style="background-image: url(/assets/img/banner.jpg)">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
@@ -20,8 +20,9 @@
 <hr />
 <div class="container">
     <div class="row">
+        <h4 class="text-center">Provide Information</h4>
     <div class="col-md-6 mx-auto">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Post.Title" class="control-label"></label>
@@ -39,17 +40,21 @@
                 <span asp-validation-for="Post.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="uploadPhoto" class="control-label"></label>
+                <input asp-for="uploadPhoto" accept="image/*" required />
+                <span asp-validation-for="uploadPhoto" class="text-danger"></span>
+            </div>
+             <div class="form-group">
                 <label asp-for="Categories" class="control-label">Category: </label>
                     @for(int i = 0; i < Model.Categories.Count; i++)
                     {
                          <input type="hidden" asp-for="Categories[i].Value" />
                         <input asp-for="Categories[i].Selected" />@Model.Categories[i].Text
                     }
-                </div>
+              </div>
             <div class="form-group mb-3 mt-3">
                 <input type="submit" value="Post" class="btn btn-primary" />
                 <a asp-action="Index">Back</a>
-
             </div>
         </form>
     </div>

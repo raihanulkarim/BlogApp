@@ -12,6 +12,7 @@ namespace BlogApp.Models
         public string Description { get; set; }
         public DateTime PostedDate { get; set; } = DateTime.Now;
         public string AuthorId { get; set; }
+        public string Photo { get; set; }
         public ICollection<PostCat> PostCats { get; set; }
         public ApplicationUser Author { get; set; }
     }

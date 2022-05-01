@@ -77,7 +77,7 @@ body {
     float: left;
     width: 46%;
     padding-left: 27px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .user-data h2 {
@@ -100,7 +100,6 @@ body {
 .user-data span {
     font-size: 14px;
     color: white;
-    margin-bottom: 5px;
 
 }
 

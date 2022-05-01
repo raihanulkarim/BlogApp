@@ -6,18 +6,12 @@
     ViewData["Title"] = "Details";
 }
 <!-- Page Header-->
-<header class="masthead" style="background-image: url('/assets/img/post-bg.jpg')">
+<header class="masthead" style="background-image: url(/assets/img/@Model.Photo)">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="post-heading">
-                    <h1>@Model.Title</h1>
-                    <h2 class="subheading">@Model.SubTitle</h2>
-                    <span class="meta">
-                        Posted by
-                        <a href="#!">@Model.Author.Email</a>
-                        on @Model.PostedDate
-                    </span>
+                <div class="post-heading text-center">
+                    <h2>@Model.Title</h2>
                 </div>
             </div>
         </div>
@@ -26,13 +20,20 @@
 <!-- Post Content-->
 <article class="mb-4">
     <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-md-10 col-lg-10 col-xl-10 mx-auto">
+                 <h3 class="subheading">@Model.SubTitle</h3>
+                    <span class="meta">
+                        Posted by
+                        <a class="text-danger" asp-controller="home" asp-action="profile" asp-route-uId="@Model.Author.Id">@Model.Author.FirstName @Model.Author.LastName</a>
+                        on @Model.PostedDate
+                    </span>
                 @foreach(var i in Model.PostCats)
                 {
-                    <p>@i.Category.Name</p>
+                    <p><i class="fa fa-tag" aria-hidden="true"></i>@i.Category.Name</p>
                 }
-                @Html.DisplayFor(model => model.Description)
+
+                <hr />@Html.DisplayFor(model => model.Description)
             </div>
         </div>
     </div>
@@ -42,5 +43,4 @@
     {
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> 
     }
-    <a asp-action="Index">Back</a>
 </div>

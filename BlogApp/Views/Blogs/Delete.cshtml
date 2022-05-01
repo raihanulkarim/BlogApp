@@ -4,7 +4,7 @@
     ViewData["Title"] = "Delete";
 }
   <!-- Page Header-->
-<header class="masthead" style="background-image: url('/assets/img/post-bg.jpg')">
+<header class="masthead" style="background-image: url(/assets/img/post-bg.jpg)">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
@@ -13,7 +13,7 @@
                     <h2 class="subheading">@Model.SubTitle</h2>
                     <span class="meta">
                         Posted by
-                        <a href="#!">@Model.Author.Email</a>
+                        <a class="text-danger" asp-controller="home" asp-action="profile" asp-route-uId="@Model.Author.Id">@Model.Author.FirstName @Model.Author.LastName</a>
                         on @Model.PostedDate
                     </span>
                 </div>
@@ -29,8 +29,10 @@
     
             <form asp-action="Delete">
                 <input type="hidden" asp-for="Id" />
-                <input type="submit" value="Delete" class="btn btn-danger" /> |
-                <a asp-action="Index">Back</a>
+                <div class="form-group mb-3 mt-3">
+                    <input type="submit" value="Delete" class="btn btn-danger" /> |
+                    <a asp-action="Index">Back</a>
+                </div>
             </form>
 
         </div>

@@ -10,6 +10,8 @@ using BlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using BlogApp.ViewModels;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace BlogApp.Controllers
 {
@@ -18,23 +20,25 @@ namespace BlogApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public BlogsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public BlogsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             this.userManager = userManager;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Blog
         public async Task<IActionResult> Index(int? pageNumber)
         {
-            var posts = _context.Posts.Where(r => r.AuthorId == userManager.GetUserId(HttpContext.User)).Include(r => r.Author).Include(p => p.PostCats).ThenInclude(r=>r.Category);
+            var posts = _context.Posts.Where(r => r.AuthorId == userManager.GetUserId(HttpContext.User)).Include(r => r.Author).Include(p => p.PostCats).ThenInclude(r=>r.Category).OrderByDescending(r=> r.Id);
             if (posts.Count() == 0)
             {
                 ViewBag.flag = false;
             }
             ViewBag.cat = _context.Categories.Where(r => r.UserId == userManager.GetUserId(HttpContext.User));
-            int pageSize = 10;
+            int pageSize = 8;
             var res = await PaginatedList<Post>.CreateAsync(posts.AsNoTracking(), pageNumber ?? 1, pageSize);
             return View(res);
         }
@@ -80,34 +84,40 @@ namespace BlogApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PostCreateViewModel viewModel)
         {
-            var selectedValue = viewModel.Categories.Where(r => r.Selected).Select(r => r.Value).Select(int.Parse).ToList();
+            
             if (ModelState.IsValid)
             {
+                var userId = userManager.GetUserId(HttpContext.User);
                 var post = new Post
                 {
                     Title = viewModel.Post.Title,
                     Description = viewModel.Post.Description,
                     SubTitle = viewModel.Post.SubTitle,
                     PostedDate = viewModel.Post.PostedDate,
-                    AuthorId = userManager.GetUserId(HttpContext.User)
+                    Photo = await PhotoUpload(viewModel),
+                    AuthorId = userId
                 };
                 _context.Add(post);
                 await _context.SaveChangesAsync();
-
-                foreach (var cat in selectedValue)
+                if (_context.Categories.Where(r=> r.UserId == userId).ToList().Count() > 0)
                 {
-                    _context.PostCats.Add(
-                        new PostCat
-                        {
-                            Post = post,
-                            Category = await _context.Categories.FirstOrDefaultAsync(r=> r.Id == cat),
-                            CatId = cat,
-                            PostId = post.Id
-                        }
-                        );
+                    var selectedValue = viewModel.Categories.Where(r => r.Selected).Select(r => r.Value).Select(int.Parse).ToList();
+
+                    foreach (var cat in selectedValue)
+                    {
+                        _context.PostCats.Add(
+                            new PostCat
+                            {
+                                Post = post,
+                                Category = await _context.Categories.FirstOrDefaultAsync(r => r.Id == cat),
+                                CatId = cat,
+                                PostId = post.Id
+                            }
+                            );
+                    }
                 }
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("details", new { post.Id }); ;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -140,6 +150,8 @@ namespace BlogApp.Controllers
                     post.Title = viewModel.Post.Title;
                     post.SubTitle = viewModel.Post.SubTitle;
                     post.Description = viewModel.Post.Description;
+                    PhotoDelete(post);
+                    post.Photo = await PhotoUpload(viewModel);
                     _context.Update(post);
                     await _context.SaveChangesAsync();
                 }
@@ -154,7 +166,7 @@ namespace BlogApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("details", new {id });
             }
             return View(viewModel);
         }
@@ -205,5 +217,38 @@ namespace BlogApp.Controllers
             }
             return true;
         }
-    }
+        public async Task<string> PhotoUpload(PostCreateViewModel createViewModel)
+        {
+            if (createViewModel.uploadPhoto != null)
+            {
+                string extension = Path.GetExtension(createViewModel.uploadPhoto.FileName);
+                String fileName = "profile";
+                createViewModel.Post.Photo = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(webHostEnvironment.WebRootPath + "/assets/img", fileName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await createViewModel.uploadPhoto.CopyToAsync(fileStream);
+                }
+                return createViewModel.Post.Photo;
+            }
+            else
+            {
+                return null;
+
+            }
+        }
+        public void PhotoDelete(Post post)
+        {
+            if (post.Photo != null)
+            {
+                String ImgPath = Path.Combine(webHostEnvironment.WebRootPath + "/assets/img", post.Photo);
+                FileInfo f = new FileInfo(ImgPath);
+                if (f != null)
+                {
+                    System.IO.File.Delete(ImgPath);
+                    f.Delete();
+                }
+            }
+        }
 }
+    }

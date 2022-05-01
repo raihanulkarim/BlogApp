@@ -11,25 +11,30 @@
 }
 
     <!-- Page Header-->
-<header class="masthead" style="background-image: url('/assets/img/mountains-55067.png')">
+<header class="masthead" style="background-image: url(/assets/img/mountains-55067.png)">
     <div class="container position-relative px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="row gx-4 gx-lg-4 justify-content-center">
             <div class="col-md-4 col-lg-4 col-xl-5">
                 <div class="page-heading">
                     <img class="img-fluid rounded border" src="~/assets/img/@ViewBag.userId.ProPic" alt="" />
                 </div>
-                 <p class="edit-button"><a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Edit Profile</a></p>
+                 @if(ViewBag.isSelfUser == true){
+                     <p class="edit-button"><a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Edit Profile</a></p>
+                 }
             </div>
             <div class="user-profile col-md-8 col-lg-8 col-xl-7">
                 <div class="user-data text-light">
                     <h2>@ViewBag.userId.FirstName @ViewBag.userId.LastName</h2>
-                    <div class="small">
             <span class="post-label">@ViewBag.userId.Occupation</span><br>
             <span class="small"><strong>@ViewBag.userId.Organisation</strong></span><br>
             <i class="fa fa-envelope small"></i><span> @ViewBag.userId.Email</span><br />
             <i class="fa fa-phone small" aria-hidden="true"> </i><span> @ViewBag.userId.PhoneNumber</span><br />
-                                <span class="small">Joined @ViewBag.NumberOfDays days ago!</span><br />
-                    </div>
+            @if(@ViewBag.NumberOfDays == 0){
+                <span class="small">Joined today!</span><br />
+            }else{
+                <span class="small">Joined @ViewBag.NumberOfDays days ago!</span><br />
+            }
+                                
                 <div class="sm-list">
               <a href="@ViewBag.userId.Facebook" class="sm-link">
                <i class="fab fa-facebook"></i>
@@ -89,13 +94,16 @@
                             </a>
                             <p class="post-meta">
                                 Posted by
-                                <a href="#!">@post.Author.Email</a>
+                                <a asp-controller="home" asp-action="profile" asp-route-uId="@post.Author.Id">@post.Author.FirstName @post.Author.LastName</a>
                                 on @post.PostedDate
                             </p>
                         </div>
                         <div class="col-md-2">
-                            <a asp-action="edit" asp-controller="blogs" asp-route-id="@post.Id" class="text-warning">Edit</a> |
-                            <a asp-action="delete" asp-controller="blogs" asp-route-id="@post.Id" class="text-danger">Delete</a>
+                            @if(ViewBag.isSelfUser == true){
+                                <a asp-action="edit" asp-controller="blogs" asp-route-id="@post.Id" class="text-warning">Edit</a> <span>|</span>
+                                <a asp-action="delete" asp-controller="blogs" asp-route-id="@post.Id" class="text-danger">Delete</a>
+                            }
+                            
                         </div>
                     </div>
                 </div>
@@ -106,11 +114,11 @@
               <!-- Pager-->
         <div class = row>
             <div class=" col-6 mb-4">       
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)"
-                   asp-route-currentFilter="@ViewData["CurrentFilter"]" class="align-content-lg-start btn btn-primary text-uppercase @prevDisabled">Newer Posts </a>
+                <a asp-action="profile" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-uId="@ViewBag.userId.Id" class="align-content-lg-start btn btn-primary text-uppercase @prevDisabled">Newer Posts </a>
             </div>
             <div class=" d-flex col-6 justify-content-end mb-4">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]"asp-route-pageNumber="@(Model.PageIndex + 1)"asp-route-currentFilter="@ViewData["CurrentFilter"]" class=" btn btn-primary text-uppercase @nextDisabled"> Older Posts </a>
+                <a asp-action="profile" asp-route-sortOrder="@ViewData["CurrentSort"]"asp-route-pageNumber="@(Model.PageIndex + 1)"asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-uId = "@ViewBag.userId.Id" class=" btn btn-primary text-uppercase @nextDisabled"> Older Posts </a>
             </div>
          </div>
             }

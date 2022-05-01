@@ -53,6 +53,7 @@ namespace BlogApp.Areas.Identity.Pages.Account.Manage
             public string Instagram { get; set; }
             public string ProPic { get; set; }
             [NotMapped]
+            [Display(Name ="Upload Photo:")]
             public IFormFile uploadImage { get; set; }
         }
 
